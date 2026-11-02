@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="HTML email portfolio by Phil Howell — accessible, hand-built email templates.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<title>Phil Howell — Email Craft</title>
+<style>
+  /* Layout: a quiet portfolio shell framing one email specimen at a time —
+     inbox-style preview on the left of a wide screen, build notes beside it,
+     with a source-code view a tap away. */
+  :root {
+    --bg: #eef1f6;
+    --surface: #ffffff;
+    --ink: #10203a;
+    --ink-soft: #46566f;
+    --ink-faint: #6b7a93;
+    --line: #d7deea;
+    --line-soft: #e6ebf3;
+    --brand: #123a6b;        /* deep accessible navy, Motability-adjacent in spirit */
+    --brand-bright: #1f6fd6;
+    --accent: #c8541b;       /* warm counterpoint, AA on white */
+    --good: #1f7a4d;
+    --code-bg: #0f1c30;
+    --code-ink: #d7e3f4;
+    --focus: #1f6fd6;
+    --shadow: 0 1px 2px rgba(16,32,58,.06), 0 12px 32px rgba(16,32,58,.10);
+    --radius: 14px;
+    --font-ui: "Hanken Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0b1322;
+      --surface: #131d30;
+      --ink: #eaf0fa;
+      --ink-soft: #b2c0d6;
+      --ink-faint: #8595ad;
+      --line: #27344c;
+      --line-soft: #1d2a40;
+      --brand: #6fa8ec;
+      --brand-bright: #83b6f2;
+      --accent: #f0864d;
+      --good: #5fcf96;
+      --code-bg: #0a1525;
+      --code-ink: #d7e3f4;
+      --focus: #83b6f2;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 16px 40px rgba(0,0,0,.45);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0b1322;
+    --surface: #131d30;
+    --ink: #eaf0fa;
+    --ink-soft: #b2c0d6;
+    --ink-faint: #8595ad;
+    --line: #27344c;
+    --line-soft: #1d2a40;
+    --brand: #6fa8ec;
+    --brand-bright: #83b6f2;
+    --accent: #f0864d;
+    --good: #5fcf96;
+    --code-bg: #0a1525;
+    --code-ink: #d7e3f4;
+    --focus: #83b6f2;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 16px 40px rgba(0,0,0,.45);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 { text-wrap: balance; margin: 0; }
+  a { color: var(--brand-bright); }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+
+  .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding-inline: max(20px, env(safe-area-inset-left, 0px)) max(20px, env(safe-area-inset-right, 0px));
+  }
+
+  /* ---- Masthead ---- */
+  .mast { padding-block: 40px 20px; }
+  .eyebrow {
+    font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--ink-faint); font-weight: 700; margin-bottom: 10px;
+  }
+  .mast h1 { font-size: clamp(26px, 5vw, 38px); font-weight: 800; letter-spacing: -.02em; }
+  .mast p { color: var(--ink-soft); max-width: 60ch; margin: 10px 0 0; }
+
+  .disclaimer {
+    margin-top: 20px;
+    display: flex; gap: 10px; align-items: flex-start;
+    background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line));
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13.5px; color: var(--ink-soft);
+    max-width: 72ch;
+  }
+  .disclaimer strong { color: var(--ink); }
+  .disclaimer svg { flex: 0 0 auto; margin-top: 2px; }
+
+  /* ---- Tabs ---- */
+  .tabs {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 28px; padding-bottom: 2px;
+    border-bottom: 1px solid var(--line);
+  }
+  .tab {
+    appearance: none; border: 1px solid transparent; background: transparent;
+    font-family: inherit; font-size: 14px; font-weight: 600;
+    color: var(--ink-faint); cursor: pointer;
+    padding: 9px 14px; border-radius: 9px 9px 0 0;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .tab:hover { color: var(--ink); background: var(--line-soft); }
+  .tab[aria-selected="true"] {
+    color: var(--brand); background: var(--surface);
+    border-color: var(--line); border-bottom-color: var(--surface);
+    margin-bottom: -1px;
+  }
+  .tab .pip {
+    font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    padding: 2px 6px; border-radius: 99px;
+    background: var(--line-soft); color: var(--ink-faint);
+  }
+  .tab[aria-selected="true"] .pip { background: color-mix(in srgb, var(--brand) 16%, transparent); color: var(--brand); }
+  .tab[data-soon] .pip { background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); }
+
+  /* ---- Panel scaffold ---- */
+  .panel { padding-block: 28px 56px; }
+  .panel[hidden] { display: none !important; }
+
+  .split {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 360px);
+    gap: 28px; align-items: start;
+  }
+  @media (max-width: 860px) { .split { grid-template-columns: 1fr; } }
+
+  /* ---- View toggle (preview / source) ---- */
+  .viewbar {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .segmented {
+    display: inline-flex; background: var(--line-soft);
+    border-radius: 10px; padding: 3px;
+  }
+  .segmented button {
+    appearance: none; border: 0; background: transparent; cursor: pointer;
+    font-family: inherit; font-size: 13px; font-weight: 600; color: var(--ink-soft);
+    padding: 7px 14px; border-radius: 8px;
+  }
+  .segmented button[aria-pressed="true"] {
+    background: var(--surface); color: var(--ink); box-shadow: var(--shadow);
+  }
+  .meta-note { margin-left: auto; font-size: 12.5px; color: var(--ink-faint); }
+
+  /* ---- Inbox frame ---- */
+  .client {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow);
+  }
+  .client-head { padding: 16px 18px; border-bottom: 1px solid var(--line-soft); }
+  .client-subject { font-size: 17px; font-weight: 700; color: var(--ink); letter-spacing: -.01em; }
+  .client-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+  .avatar {
+    width: 38px; height: 38px; border-radius: 50%; flex: 0 0 auto;
+    background: var(--brand); color: #fff; font-weight: 700; font-size: 15px;
+    display: grid; place-items: center;
+  }
+  .from-name { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .from-addr { font-size: 12.5px; color: var(--ink-faint); }
+  .to-line { font-size: 12.5px; color: var(--ink-faint); margin-left: auto; text-align: right; }
+
+  .stage { background: #f4f6fa; padding: 22px 16px; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .stage { background: #0c1424; } }
+  :root[data-theme="dark"] .stage { background: #0c1424; }
+
+  /* ---- The email specimen (self-contained look of real email HTML) ---- */
+  .email {
+    max-width: 600px; margin: 0 auto; background: #ffffff;
+    font-family: Arial, Helvetica, sans-serif; color: #2b2b2b;
+    border-radius: 10px; overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08), 0 8px 24px rgba(0,0,0,.08);
+  }
+  .email-bar { height: 5px; background: #123a6b; }
+  .email-head { padding: 26px 32px 6px; }
+  .email-logo {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-weight: 800; font-size: 18px; color: #123a6b; letter-spacing: -.01em;
+  }
+  .email-logo .glyph {
+    width: 26px; height: 26px; border-radius: 7px; background: #123a6b; color: #fff;
+    display: grid; place-items: center; font-size: 14px;
+  }
+  .email-body { padding: 8px 32px 4px; }
+  .email-body h2 { font-size: 21px; color: #16212f; margin: 14px 0 0; font-family: Arial, Helvetica, sans-serif; }
+  .email-body p { font-size: 15px; line-height: 1.62; color: #3a3a3a; margin: 14px 0; }
+  .ref-card {
+    background: #f1f5fb; border: 1px solid #dbe6f4; border-radius: 8px;
+    padding: 16px 18px; margin: 18px 0;
+  }
+  .ref-card .lbl { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #5a6b82; font-weight: 700; }
+  .ref-card .val { font-size: 22px; font-weight: 800; color: #123a6b; letter-spacing: .02em; font-variant-numeric: tabular-nums; margin-top: 3px; }
+  .steps { margin: 16px 0; padding: 0; list-style: none; }
+  .steps li { display: flex; gap: 12px; padding: 10px 0; border-top: 1px solid #edf1f7; font-size: 14.5px; color: #3a3a3a; }
+  .steps li:first-child { border-top: 0; }
+  .steps .n {
+    flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%;
+    background: #123a6b; color: #fff; font-size: 13px; font-weight: 700;
+    display: grid; place-items: center;
+  }
+  .btn-wrap { padding: 8px 0 18px; }
+  .btn {
+    display: inline-block; background: #c8541b; color: #ffffff !important;
+    text-decoration: none; font-weight: 700; font-size: 15px;
+    padding: 14px 30px; border-radius: 8px;
+  }
+  .email-help { font-size: 13.5px; color: #55606f; }
+  .email-foot {
+    padding: 22px 32px 30px; border-top: 1px solid #ececec; margin-top: 10px;
+    font-size: 12px; line-height: 1.6; color: #7a8291;
+  }
+  .email-foot a { color: #123a6b; }
+  .email-foot .org { font-weight: 700; color: #4a5260; }
+
+  /* ---- Source view ---- */
+  .source { border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--line); }
+  .source-head {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--code-bg); padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .source-head .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .source-head .fname { margin-left: 8px; font-family: var(--font-mono); font-size: 12.5px; color: #9fb3cf; }
+  .copy-btn {
+    margin-left: auto; appearance: none; border: 1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.06); color: #d7e3f4; cursor: pointer;
+    font-family: inherit; font-size: 12.5px; font-weight: 600;
+    padding: 6px 12px; border-radius: 7px; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .copy-btn:hover { background: rgba(255,255,255,.12); }
+  pre.code {
+    margin: 0; background: var(--code-bg); color: var(--code-ink);
+    font-family: var(--font-mono); font-size: 12.5px; line-height: 1.7;
+    padding: 18px; overflow-x: auto; max-height: 560px; tab-size: 2;
+  }
+  pre.code .t { color: #7fb0e8; }   /* tag */
+  pre.code .a { color: #c9a36b; }   /* attr */
+  pre.code .s { color: #8fce9b; }   /* string */
+  pre.code .c { color: #5f7290; font-style: italic; } /* comment */
+
+  /* ---- Notes rail ---- */
+  .notes { position: sticky; top: max(16px, env(safe-area-inset-top, 0px)); }
+  .notes h3 { font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); font-weight: 700; margin-bottom: 4px; }
+  .notes .sub { font-size: 14px; color: var(--ink-soft); margin: 0 0 16px; }
+  .note {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 11px;
+    padding: 13px 15px; margin-bottom: 10px;
+  }
+  .note .nt { font-weight: 700; font-size: 14px; color: var(--ink); display: flex; gap: 8px; align-items: center; }
+  .note .nt svg { color: var(--good); flex: 0 0 auto; }
+  .note .nd { font-size: 13px; color: var(--ink-soft); margin-top: 4px; }
+
+  /* ---- Stub panels ---- */
+  .stub {
+    text-align: center; max-width: 54ch; margin: 24px auto; padding: 44px 24px;
+    background: var(--surface); border: 1px dashed var(--line); border-radius: var(--radius);
+  }
+  .stub h2 { font-size: 22px; margin-bottom: 8px; }
+  .stub p { color: var(--ink-soft); margin: 0 auto; max-width: 46ch; }
+  .stub .tag { display: inline-block; margin-bottom: 14px; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); padding: 4px 10px; border-radius: 99px; }
+
+  footer.site {
+    border-top: 1px solid var(--line); padding-block: 22px 40px;
+    font-size: 12.5px; color: var(--ink-faint);
+  }
+
+  .toast {
+    position: fixed; left: 50%; transform: translateX(-50%) translateY(20px);
+    bottom: calc(22px + env(safe-area-inset-bottom, 0px));
+    background: var(--ink); color: var(--bg);
+    padding: 10px 18px; border-radius: 99px; font-size: 13.5px; font-weight: 600;
+    opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 50;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="mast">
+    <div class="eyebrow">HTML Email Portfolio</div>
+    <h1>Phil Howell — Email Craft</h1>
+    <p>A small set of hand-built, accessible email templates. Each one is coded from scratch:
+       table-based layout, inline styles, a bulletproof button, preheader text, dark-mode handling
+       and proper accessibility — the things that make an email render everywhere and read for everyone.</p>
+
+    <div class="disclaimer">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+      <div><strong>Sample / demonstration work.</strong> These are original templates built to show email-development
+      skills. They use a fictional brand ("Meridian Mobility") and are not affiliated with, endorsed by, or copied from
+      any real company.</div>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Email types">
+      <button class="tab" role="tab" id="tab-tx" aria-controls="panel-tx" aria-selected="true">
+        Transactional <span class="pip">Live</span>
+      </button>
+      <button class="tab" role="tab" id="tab-mk" aria-controls="panel-mk" aria-selected="false" data-soon>
+        Marketing <span class="pip">Soon</span>
+      </button>
+      <button class="tab" role="tab" id="tab-nl" aria-controls="panel-nl" aria-selected="false" data-soon>
+        Newsletter <span class="pip">Soon</span>
+      </button>
+      <button class="tab" role="tab" id="tab-pt" aria-controls="panel-pt" aria-selected="false" data-soon>
+        Plain text <span class="pip">Soon</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- TRANSACTIONAL -->
+  <section class="panel" id="panel-tx" role="tabpanel" aria-labelledby="tab-tx">
+    <div class="split">
+      <div>
+        <div class="viewbar">
+          <div class="segmented" role="group" aria-label="View mode">
+            <button id="v-prev" aria-pressed="true">Preview</button>
+            <button id="v-src" aria-pressed="false">HTML source</button>
+          </div>
+          <span class="meta-note">Application received · confirmation email</span>
+        </div>
+
+        <!-- Preview -->
+        <div id="view-preview">
+          <div class="client">
+            <div class="client-head">
+              <div class="client-subject">Your Meridian Mobility application has been received</div>
+              <div class="client-row">
+                <div class="avatar" aria-hidden="true">M</div>
+                <div>
+                  <div class="from-name">Meridian Mobility</div>
+                  <div class="from-addr">applications@meridian-mobility.example</div>
+                </div>
+                <div class="to-line">to Phil Howell<br>Today, 1:40pm</div>
+              </div>
+            </div>
+            <div class="stage">
+              <!-- specimen -->
+              <div class="email" role="article" aria-label="Application received email">
+                <div class="email-bar"></div>
+                <div class="email-head">
+                  <span class="email-logo"><span class="glyph" aria-hidden="true">M</span>Meridian Mobility</span>
+                </div>
+                <div class="email-body">
+                  <h2>We've received your application</h2>
+                  <p>Hello Phil,</p>
+                  <p>Thanks for applying to lease a vehicle through the Meridian Mobility Scheme.
+                     Your application is now with our team — there's nothing more you need to do right now.</p>
+
+                  <div class="ref-card">
+                    <div class="lbl">Your application reference</div>
+                    <div class="val">MM&#8209;7F42&#8209;QLX</div>
+                  </div>
+
+                  <p style="margin-bottom:6px;"><strong>What happens next</strong></p>
+                  <ul class="steps">
+                    <li><span class="n">1</span><span>We'll confirm your eligibility against your mobility allowance — usually within <strong>3 working days</strong>.</span></li>
+                    <li><span class="n">2</span><span>You'll get an email to choose your vehicle and a nearby approved dealer.</span></li>
+                    <li><span class="n">3</span><span>Your dealer's Scheme specialist helps you complete the order and arrange any adaptations.</span></li>
+                  </ul>
+
+                  <div class="btn-wrap">
+                    <a href="https://example.com/application" class="btn">Track your application</a>
+                  </div>
+
+                  <p class="email-help">Need a hand? Call us on <strong>0800 000 0000</strong> (Mon–Fri, 8am–6pm)
+                     or reply to this email and we'll get back to you.</p>
+                </div>
+                <div class="email-foot">
+                  <span class="org">Meridian Mobility Operations Ltd</span> — a fictional company used for a portfolio sample.<br>
+                  You're receiving this because an application was submitted using your details.
+                  If this wasn't you, please <a href="https://example.com/contact">let us know</a>.<br><br>
+                  Registered office: 1 Sample Street, London · Authorised and regulated by the (fictional) Financial Conduct Authority.<br>
+                  <a href="https://example.com/privacy">Privacy</a> · <a href="https://example.com/accessibility">Accessibility</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Source -->
+        <div id="view-source" hidden>
+          <div class="source">
+            <div class="source-head">
+              <span class="dot" style="background:#ff5f57"></span>
+              <span class="dot" style="background:#febc2e"></span>
+              <span class="dot" style="background:#28c840"></span>
+              <span class="fname">application-received.html</span>
+              <button class="copy-btn" id="copyBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copy HTML
+              </button>
+            </div>
+            <pre class="code" id="codeBlock" tabindex="0"></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes rail -->
+      <aside class="notes" aria-label="Build notes">
+        <h3>Build notes</h3>
+        <p class="sub">Deliberate choices a recruiter can look for in the source.</p>
+        <div class="note"><div class="nt"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>Table-based layout</div><div class="nd">Nested <code>&lt;table&gt;</code> with <code>role="presentation"</code> — the only layout method Outlook renders reliably.</div></div>
+        <div class="note"><div class="nt"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>Inline styles</div><div class="nd">Every style is inline; a <code>&lt;head&gt;</code> block is backup only, since several clients strip it.</div></div>
+        <div class="note"><div class="nt"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>Bulletproof button</div><div class="nd">A padded, coloured link with a VML fallback so the CTA still fills and clicks in Outlook.</div></div>
+        <div class="note"><div class="nt"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>Preheader text</div><div class="nd">Hidden preview line that controls the inbox snippet instead of leaking stray markup.</div></div>
+        <div class="note"><div class="nt"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>Accessibility</div><div class="nd">Semantic <code>lang</code>, real contrast, a logical reading order and <code>role="presentation"</code> so screen readers skip the layout grid — fitting for a mobility audience.</div></div>
+        <div class="note"><div class="nt"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>Dark-mode aware</div><div class="nd"><code>color-scheme</code> + <code>prefers-color-scheme</code> so the template holds up in dark inboxes.</div></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- STUBS -->
+  <section class="panel" id="panel-mk" role="tabpanel" aria-labelledby="tab-mk" hidden>
+    <div class="stub"><span class="tag">In progress</span><h2>Marketing email</h2><p>Next up: a promotional template with a hero, multiple CTAs and a more expressive layout — showing the opposite end of the craft from a clean transactional email.</p></div>
+  </section>
+  <section class="panel" id="panel-nl" role="tabpanel" aria-labelledby="tab-nl" hidden>
+    <div class="stub"><span class="tag">In progress</span><h2>Newsletter</h2><p>A modular, multi-section layout with reusable content blocks and dividers — the format that tests how well a template scales.</p></div>
+  </section>
+  <section class="panel" id="panel-pt" role="tabpanel" aria-labelledby="tab-pt" hidden>
+    <div class="stub"><span class="tag">In progress</span><h2>Plain-text style</h2><p>A deliberately minimal template — proving that knowing when <em>not</em> to reach for heavy markup is its own skill.</p></div>
+  </section>
+
+  <footer class="site">
+    Built by Phil Howell · Original work · Fictional brand used for demonstration.
+  </footer>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite">Copied to clipboard</div>
+
+<script>
+  // ---- Tabs ----
+  const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+  function selectTab(tab) {
+    tabs.forEach(t => {
+      const sel = t === tab;
+      t.setAttribute('aria-selected', sel ? 'true' : 'false');
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !sel;
+    });
+    tab.focus();
+  }
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => selectTab(t));
+    t.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const dir = e.key === 'ArrowRight' ? 1 : -1;
+        selectTab(tabs[(i + dir + tabs.length) % tabs.length]);
+      }
+    });
+  });
+
+  // ---- View toggle ----
+  const vPrev = document.getElementById('v-prev');
+  const vSrc = document.getElementById('v-src');
+  const viewPreview = document.getElementById('view-preview');
+  const viewSource = document.getElementById('view-source');
+  function setView(src) {
+    vSrc.setAttribute('aria-pressed', src ? 'true' : 'false');
+    vPrev.setAttribute('aria-pressed', src ? 'false' : 'true');
+    viewSource.hidden = !src;
+    viewPreview.hidden = src;
+  }
+  vPrev.addEventListener('click', () => setView(false));
+  vSrc.addEventListener('click', () => setView(true));
+
+  // ---- Email source (the real, copyable template) ----
+  const emailSource = `<!DOCTYPE html>
+<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <title>Your application has been received</title>
+  <!--[if mso]>
+  <style>table,td{border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0}</style>
+  <![endif]-->
+  <style>
+    /* Backup only — several clients strip the head, so every style is also inline. */
+    @media (prefers-color-scheme: dark){
+      .bg{background:#0c1424!important} .card{background:#16202f!important}
+      .ink{color:#e9eef6!important} .soft{color:#aeb9c9!important}
+    }
+    @media (max-width:600px){ .px{padding-left:22px!important;padding-right:22px!important} }
+  </style>
+</head>
+<body class="bg" style="margin:0;padding:0;background:#eef1f6;">
+  <!-- Preheader: controls the inbox snippet, hidden in the body -->
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">
+    Your application reference is MM-7F42-QLX. Here's what happens next.
+  </div>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#eef1f6;">
+    <tr><td align="center" style="padding:24px 12px;">
+
+      <table role="presentation" class="card" width="600" cellpadding="0" cellspacing="0"
+             style="width:600px;max-width:600px;background:#ffffff;border-radius:10px;overflow:hidden;
+                    font-family:Arial,Helvetica,sans-serif;">
+        <tr><td style="height:5px;background:#123a6b;line-height:5px;font-size:0;">&nbsp;</td></tr>
+
+        <tr><td class="px" style="padding:26px 32px 4px;">
+          <span style="font-weight:bold;font-size:18px;color:#123a6b;">Meridian Mobility</span>
+        </td></tr>
+
+        <tr><td class="px" style="padding:8px 32px 0;">
+          <h1 class="ink" style="margin:14px 0 0;font-size:21px;color:#16212f;">We've received your application</h1>
+          <p class="ink" style="font-size:15px;line-height:1.62;color:#3a3a3a;">Hello Phil,</p>
+          <p class="soft" style="font-size:15px;line-height:1.62;color:#3a3a3a;">
+            Thanks for applying to lease a vehicle through the Meridian Mobility Scheme.
+            Your application is now with our team &mdash; there's nothing more you need to do right now.
+          </p>
+        </td></tr>
+
+        <!-- Reference -->
+        <tr><td class="px" style="padding:4px 32px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                 style="background:#f1f5fb;border:1px solid #dbe6f4;border-radius:8px;">
+            <tr><td style="padding:16px 18px;">
+              <div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#5a6b82;font-weight:bold;">
+                Your application reference</div>
+              <div style="font-size:22px;font-weight:bold;color:#123a6b;">MM-7F42-QLX</div>
+            </td></tr>
+          </table>
+        </td></tr>
+
+        <!-- CTA: bulletproof button -->
+        <tr><td class="px" align="left" style="padding:18px 32px 8px;">
+          <!--[if mso]>
+          <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="https://example.com/application"
+            style="height:48px;v-text-anchor:middle;width:220px;" arcsize="16%" fillcolor="#c8541b" stroke="f">
+            <w:anchorlock/><center style="color:#ffffff;font-family:Arial;font-size:15px;font-weight:bold;">
+            Track your application</center>
+          </v:roundrect>
+          <![endif]-->
+          <!--[if !mso]><!-->
+          <a href="https://example.com/application"
+             style="display:inline-block;background:#c8541b;color:#ffffff;text-decoration:none;
+                    font-weight:bold;font-size:15px;padding:14px 30px;border-radius:8px;">
+            Track your application</a>
+          <!--<![endif]-->
+        </td></tr>
+
+        <tr><td class="px" style="padding:6px 32px 26px;">
+          <p class="soft" style="font-size:13.5px;line-height:1.6;color:#55606f;">
+            Need a hand? Call us on <strong>0800 000 0000</strong> (Mon&ndash;Fri, 8am&ndash;6pm)
+            or reply to this email.
+          </p>
+        </td></tr>
+
+        <!-- Footer -->
+        <tr><td class="px" style="padding:20px 32px 30px;border-top:1px solid #ececec;">
+          <p style="font-size:12px;line-height:1.6;color:#7a8291;margin:0;">
+            You're receiving this because an application was submitted using your details.<br>
+            Meridian Mobility Operations Ltd, 1 Sample Street, London.<br>
+            <a href="https://example.com/privacy" style="color:#123a6b;">Privacy</a> &middot;
+            <a href="https://example.com/accessibility" style="color:#123a6b;">Accessibility</a>
+          </p>
+        </td></tr>
+      </table>
+
+    </td></tr></table>
+</body>
+</html>`;
+
+  // Render the source into the code block, lightly highlighted + escaped.
+  function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function highlight(raw){
+    let h = esc(raw);
+    h = h.replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="c">$1</span>');
+    h = h.replace(/(&lt;\/?)([a-zA-Z0-9:-]+)/g, '$1<span class="t">$2</span>');
+    h = h.replace(/([a-zA-Z-]+)=(&quot;|")/g, '<span class="a">$1</span>=$2');
+    return h;
+  }
+  document.getElementById('codeBlock').innerHTML = highlight(emailSource);
+
+  // ---- Copy ----
+  const toast = document.getElementById('toast');
+  let toastT;
+  function showToast(msg){
+    toast.textContent = msg; toast.classList.add('show');
+    clearTimeout(toastT); toastT = setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+  document.getElementById('copyBtn').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(emailSource);
+      showToast('HTML copied to clipboard');
+    } catch (e) {
+      const r = document.createRange();
+      r.selectNodeContents(document.getElementById('codeBlock'));
+      const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      showToast('Source selected — press Ctrl/⌘ + C');
+    }
+  });
+</script>
+</body>
+</html>
